@@ -3,6 +3,7 @@ import os
 from typing import Any, Dict
 from dotenv import load_dotenv
 import requests 
+from cache import ContextualCache
 
 load_dotenv()
 
@@ -53,11 +54,31 @@ class QueryProcessor:
     def __init__(self, llm: LLMInterface, schema: str):
         self.llm = llm
         self.schema = schema
+        self.cache = ContextualCache()
     
     def process_query(self, query: str) -> Dict[str, Any]:
         print(f"[INFO] Processing query: '{query}'")
+
+        #-----------------------------------------------#
+        print(f"[INFO] cache process started")
+        cached_result = self.cache(query)  
+        
+        
         prompt = self._construct_prompt(query)
+        gemini_prompt=prompt+cached_result
+        #print(query)
+        if cached_result:
+            response = cached_result
+            print("Using cached result for the response.")
+        else:  
+            response = self.llm.generate(gemini_prompt)
+            self.cache.store_result(response, cached_result)
         response = self.llm.generate(prompt)
+        stored_data=self.cache.store_result(response, cached_result)
+        #print(stored_data)
+
+        #------------------------------------------------#
+
         print("[INFO] Extracted query components from the LLM.")
         return response
     
@@ -124,6 +145,7 @@ class JsonFormatConverter:
     def convert(self, extracted_info: Dict[str, Any], query: str) -> Dict[str, Any]:
         print("[INFO] Converting extracted information into the target JSON format.")
         prompt = self._construct_prompt(extracted_info, query)
+        #cache prompt 
         return self.llm.generate(prompt)
 
     def _construct_prompt(self, extracted_info: Dict[str, Any], query: str) -> str:
@@ -199,7 +221,7 @@ if __name__ == '__main__':
     schema_text = open("preprossed_schema.txt", 'r').read()
     
     # Example query
-    #query = "What proteins can we get from ensg00000289505 gene"
+    query = "What proteins can we get from ensg00000289505 gene"
     # query = "Can you list all proteins produced by the gene on chromosome chrx?"
     # query = "List all genes that starts at position 9537370, ends at position 9839076, and has a gene type of protein coding."
     # query = "A transcript with the ID ENST00000381261, which encodes a protein, has undergone changes. Based on this transcript, what is the resulting protien?"
