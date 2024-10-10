@@ -221,7 +221,7 @@ if __name__ == '__main__':
     schema_text = open("preprossed_schema.txt", 'r').read()
     
     # Example query
-    query = "What proteins can we get from ensg00000289505 gene"
+    # query = "What proteins can we get from ensg00000289505 gene"
     # query = "Can you list all proteins produced by the gene on chromosome chrx?"
     # query = "List all genes that starts at position 9537370, ends at position 9839076, and has a gene type of protein coding."
     # query = "A transcript with the ID ENST00000381261, which encodes a protein, has undergone changes. Based on this transcript, what is the resulting protien?"
