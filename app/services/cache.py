@@ -26,3 +26,12 @@ class ConversationCache:
             del self.cache[user_id]
 
 
+# sample format
+# {
+#     'user1': {
+#         'session1': {
+#             'user': ['Hello, what can you do?'],
+#             'assistant': ['I can help you with various tasks like answering questions and providing information.']
+#         }
+#     }
+# }

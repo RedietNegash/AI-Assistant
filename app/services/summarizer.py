@@ -1,6 +1,6 @@
 # Handles graph-related operations like processing nodes, edges, generating responses ...
 from collections import defaultdict
-from app.services.llm_models import GeminiModel,OpenAIModel
+from llm_models import GeminiModel,OpenAIModel
 import re
 import traceback
 import json
@@ -59,6 +59,7 @@ class Graph_Summarizer:
     def generate_grouped_descriptions(self,edges, nodes,batch_size=50):
         grouped_edges = self.group_edges_by_source(edges)
         descriptions = []
+        
 
         # Process each source node and its related target nodes
         for source_node_id, related_edges in grouped_edges.items():
@@ -67,6 +68,8 @@ class Graph_Summarizer:
 
             # Collect descriptions for all target nodes linked to this source node
             target_descriptions = []
+
+
             for edge in related_edges:
                 target_node_id = edge["target_node"].split(' ')[-1]
                 target_node = nodes.get(target_node_id, {})
@@ -80,10 +83,23 @@ class Graph_Summarizer:
             source_and_targets = (f"Source Node ({source_node_id}): {source_desc}\n" +
                                 "\n".join(target_descriptions))
             descriptions.append(source_and_targets)
+        
+        # for i in range(0, len(related_edges), batch_size):
+        #  batch = related_edges[i:i + batch_size]
+        #  for edge in batch:
+        #             target_node_id = edge["target_node"].split(' ')[-1]
+        #             target_node = nodes.get(target_node_id, {})
+        #             target_desc = self.generate_node_description(target_node)
 
+        #             label = edge["label"]
+        #             target_descriptions.append(f"{label} -> Target Node ({edge['target_node']}): {target_desc}")
+
+            
+            
             # If batch processing is required, we can break or yield after each batch
             # if len(descriptions) >= batch_size:
             #   break   Process the next batch in another iteration
+
 
         return descriptions
     
@@ -134,4 +150,12 @@ class Graph_Summarizer:
             return response
         except:
             traceback.print_exc()
+
+
+if __name__ == "__main__":
+    graph_summarizer=Graph_Summarizer('gemini')
+    with open('test.json', 'r') as file:
+     test_file = json.load(file)
+    graph_summarizer.open_ai_summarizer(test_file)
+
 
