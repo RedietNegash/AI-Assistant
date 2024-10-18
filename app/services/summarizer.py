@@ -1,6 +1,6 @@
 # Handles graph-related operations like processing nodes, edges, generating responses ...
 from collections import defaultdict
-from llm_models import GeminiModel,OpenAIModel
+# from llm_models import GeminiModel,OpenAIModel
 import re
 import traceback
 import json
@@ -58,6 +58,7 @@ class Graph_Summarizer:
 
     def generate_grouped_descriptions(self,edges, nodes,batch_size=50):
         grouped_edges = self.group_edges_by_source(edges)
+        print("grouped edges",grouped_edges)
         descriptions = []
         
 
@@ -68,6 +69,7 @@ class Graph_Summarizer:
 
             # Collect descriptions for all target nodes linked to this source node
             target_descriptions = []
+            print (related_edges)
 
 
             for edge in related_edges:
@@ -104,6 +106,7 @@ class Graph_Summarizer:
         return descriptions
     
     def graph_description(self,graph):
+        # print("Received graph:", graph) 
 
         nodes = {node['data']['id']: node['data'] for node in graph['nodes']}
         edges = [{'source_node': edge['data']['source_node'], 'target_node': edge['data']['target_node'], 'label': edge['data']['label']} for edge in graph['edges']]
@@ -152,10 +155,6 @@ class Graph_Summarizer:
             traceback.print_exc()
 
 
-if __name__ == "__main__":
-    graph_summarizer=Graph_Summarizer('gemini')
-    with open('test.json', 'r') as file:
-     test_file = json.load(file)
-    graph_summarizer.open_ai_summarizer(test_file)
+
 
 
