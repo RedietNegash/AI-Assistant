@@ -1,0 +1,29 @@
+ config_list_4v = autogen.config_list_from_json(
+    "OAI_CONFIG_LIST",
+    filter_dict={
+        "model": ["gpt-4-vision-preview"],
+    },
+)
+
+config_list_gpt4 = autogen.config_list_from_json(
+    "OAI_CONFIG_LIST",
+    filter_dict={
+        "model": ["gpt-4", "gpt-4-0314", "gpt4", "gpt-4-32k", "gpt-4-32k-0314", "gpt-4-32k-v0314"],
+    },
+)
+
+config_list_gemini = autogen.config_list_from_json(
+    "OAI_CONFIG_LIST",
+    filter_dict={
+        "model": ["gemini-pro", "gemini-1.5-pro", "gemini-1.5-pro-001"],
+    },
+)
+
+config_list_gemini_vision = autogen.config_list_from_json(
+    "OAI_CONFIG_LIST",
+    filter_dict={
+        "model": ["gemini-pro-vision"],
+    },
+)
+
+seed = 25  # for caching
